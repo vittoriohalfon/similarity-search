@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: SAM Template for EU Procurement Contract Search Lambda Function
+
+Resources:
+  EUProcurementContractSearch:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: main.lambda_handler
+      Runtime: python3.12
+      Timeout: 30
+      MemorySize: 256
+      Environment:
+        Variables:
+          PINECONE_API_KEY: ${PINECONE_API_KEY}
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /search
+            Method: post
+
+Outputs:
+  EUProcurementContractSearchApi:
+    Description: "API Gateway endpoint URL for Prod stage for EU Procurement Contract Search function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/search/"
+  EUProcurementContractSearchFunction:
+    Description: "EU Procurement Contract Search Lambda Function ARN"
+    Value: !GetAtt EUProcurementContractSearch.Arn
